@@ -97,7 +97,7 @@ public class ServicesListener {
                 props.put(Constants.SERVICE_DESCRIPTION, "Apache Sling Launchpad Startup Listener");
                 props.put(Constants.SERVICE_VENDOR, "The Apache Software Foundation");
                 this.launchpadListenerReg = this.bundleContext.registerService(InstallationListener.class.getName(), launchpadListener, props);
-                LaunchpadConfigInstaller.install(installer, lcp, settings.getRunModes());
+                LaunchpadConfigInstaller.install(installer, lcp, settings.getRunModes(), handler);
             }
         }
     }
@@ -149,7 +149,7 @@ public class ServicesListener {
                         + Constants.OBJECTCLASS + "=" + serviceName + ")");
             } catch (final InvalidSyntaxException ise) {
                 // this should really never happen
-                throw new RuntimeException("Unexpected exception occurred.", ise);
+                throw new RuntimeException("Unexpected exception occured.", ise);
             }
             this.retainService();
         }

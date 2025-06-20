@@ -30,6 +30,8 @@ import java.util.Set;
 import org.apache.sling.installer.api.InstallableResource;
 import org.apache.sling.installer.api.OsgiInstaller;
 import org.apache.sling.launchpad.api.LaunchpadContentProvider;
+import org.apache.sling.launchpad.api.StartupHandler;
+import org.apache.sling.launchpad.api.StartupMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,8 +73,8 @@ public class LaunchpadConfigInstaller {
      * Check the path for installable artifacts.
      */
     private boolean checkPath(final String rootPath,
-            final String resourceType,
-            Integer prio) {
+                              final String resourceType,
+                              Integer prio) {
         int count = 0;
 
         final Iterator<String> configPaths = resourceProvider.getChildren(rootPath);
@@ -145,21 +147,25 @@ public class LaunchpadConfigInstaller {
      * Install artifacts
      */
     public static void install(final OsgiInstaller installer,
-            final LaunchpadContentProvider resourceProvider,
-            final Set<String> activeRunModes) {
-        new LaunchpadConfigInstaller(resourceProvider, activeRunModes).install(installer);
+                               final LaunchpadContentProvider resourceProvider,
+                               final Set<String> activeRunModes,
+                               final StartupHandler handler) {
+        new LaunchpadConfigInstaller(resourceProvider, activeRunModes, handler).install(installer);
     }
 
     private final LaunchpadContentProvider resourceProvider;
 
     private final Set<String> activeRunModes;
 
+    private final StartupHandler handler;
+
     private final Collection<InstallableResource> installables = new HashSet<InstallableResource>();
 
     private LaunchpadConfigInstaller(final LaunchpadContentProvider resourceProvider,
-            final Set<String> activeRunModes) {
+                                     final Set<String> activeRunModes, final StartupHandler handler) {
         this.resourceProvider = resourceProvider;
         this.activeRunModes = activeRunModes;
+        this.handler = handler;
     }
 
     private void install(final OsgiInstaller installer) {
@@ -178,7 +184,11 @@ public class LaunchpadConfigInstaller {
                 String name = path.substring(namePos + 1);
                 if ( name.equals(CONFIG_NAME) ) {
                     // configurations
-                    checkPath(path, InstallableResource.TYPE_PROPERTIES, PRIORITY);
+                    if (this.handler != null && this.handler.getMode() == StartupMode.UPDATE) {
+                        checkPath(path, InstallableResource.TYPE_PROPERTIES, Integer.MAX_VALUE);
+                    } else {
+                        checkPath(path, InstallableResource.TYPE_PROPERTIES, PRIORITY);
+                    }
                 } else if ( name.equals(INSTALL_NAME) ) {
                     // files
                     checkPath(path, InstallableResource.TYPE_FILE, PRIORITY);

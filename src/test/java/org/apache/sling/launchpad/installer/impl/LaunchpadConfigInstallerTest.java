@@ -150,7 +150,7 @@ public class LaunchpadConfigInstallerTest {
     
     @Test
     public void testNoRunModes() {
-        LaunchpadConfigInstaller.install(installer, provider, NO_RUN_MODES);
+        LaunchpadConfigInstaller.install(installer, provider, NO_RUN_MODES, null);
         assertRegistered("A.cfg-P50", "B.config-P50", "C.somefile-P50", "D.properties-P50","install.cfg-P50",
                 "fiveA.cfg-H5-P50","fiveB.properties-H5-P50");
     }
@@ -159,7 +159,7 @@ public class LaunchpadConfigInstallerTest {
     public void testAnotherMode() {
         final Set<String> runModes = new HashSet<String>();
         runModes.add("another");
-        LaunchpadConfigInstaller.install(installer, provider, runModes);
+        LaunchpadConfigInstaller.install(installer, provider, runModes, null);
         assertRegistered(
                 "A.cfg-P50", "B.config-P50", "C.somefile-P50", "D.properties-P50","install.cfg-P50",
                 "fiveA.cfg-H5-P50","fiveB.properties-H5-P50",
@@ -171,7 +171,7 @@ public class LaunchpadConfigInstallerTest {
         checkResourceTypes = true;
         final Set<String> runModes = new HashSet<String>();
         runModes.add("dev");
-        LaunchpadConfigInstaller.install(installer, provider, runModes);
+        LaunchpadConfigInstaller.install(installer, provider, runModes, null);
         assertRegistered(
                 "A.cfg-P50-Tproperties", "B.config-P50-Tproperties", "C.somefile-P50-Tproperties", 
                 "D.properties-P50-Tproperties","install.cfg-P50-Tfile",
@@ -185,7 +185,7 @@ public class LaunchpadConfigInstallerTest {
         final Set<String> runModes = new HashSet<String>();
         runModes.add("dev");
         runModes.add("test");
-        LaunchpadConfigInstaller.install(installer, provider, runModes);
+        LaunchpadConfigInstaller.install(installer, provider, runModes, null);
         assertRegistered(
                 "A.cfg-P50", "B.config-P50", "C.somefile-P50", "D.properties-P50","install.cfg-P50",
                 "cfgDev.properties-P55",
@@ -197,7 +197,7 @@ public class LaunchpadConfigInstallerTest {
     @Test
     public void testOldStyle() {
         getChildrenReturnsNull = true;
-        LaunchpadConfigInstaller.install(installer, provider, NO_RUN_MODES);
+        LaunchpadConfigInstaller.install(installer, provider, NO_RUN_MODES, null);
         assertRegistered();
     }
 }
